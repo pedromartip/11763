@@ -8,25 +8,28 @@ from utils import filepath
 
 def load_dcm(filepath: str):
     """ Load a DICOM file. """
-    # YOUR CODE HERE
+    # YOUR CODE HERE: use pydicom.dcmread(...)
     # ...
+    return pydicom.dcmread(filepath)
 
 
 def compute_snr(signal_power: float, noise_power: float):
     """ Compute the signal-to-noise ratio (SNR) of a signal. """
     # YOUR CODE HERE
     # ...
+    return np.sqrt(signal_power/noise_power)
 
 
 def compute_cnr(signal_contrast: float, noise_power: float):
     """ Compute the contrast-to-noise ratio (CNR) of a signal. """
     # YOUR CODE HERE
     # ...
+    return signal_contrast/np.sqrt(noise_power)
 
 
-def main():
-    filenames = ['PMD8540804318002412548_s04_T1_REST_Frame_1__PCARDM1.dcm',
-                 'PMD1907987506279511791_s08_T1_STRESS02_Frame_1__PCARDM1.dcm']
+if __name__ == '__main__':
+    filenames = ['PCARDM1_T1_Rest.dcm',
+                 'PCARDM1_T1_Stress.dcm']
     dcms = [load_dcm(filepath(n)) for n in filenames]
 
     dcm_rest = dcms[0]
@@ -34,11 +37,43 @@ def main():
 
     [print(f'{k}: {v}') for k, v in dcm_rest.items()]
 
-    histogram = cv2.calcHist([img_rest.astype('float32')], [0], mask=None, histSize=[256], ranges=[0, 2**16])
+    histogram = cv2.calcHist([img_rest.astype('float32')], [0], mask=None, histSize=[256], ranges=[0, 2 ** 16])
     plt.subplot(121), plt.imshow(img_rest, cmap=plt.cm.bone)
-    plt.subplot(122), plt.plot(histogram), plt.xticks(np.arange(0, 2**8+1, step=2**6), np.arange(0, 2**16+1, step=2**14), rotation=45)
+    plt.subplot(122), plt.plot(histogram), plt.xticks(np.arange(0, 2 ** 8 + 1, step=2 ** 6),
+                                                      np.arange(0, 2 ** 16 + 1, step=2 ** 14), rotation=45)
     plt.show()
 
+    # Cast to float64 to avoid overflow
+    img_rest = img_rest.astype('float64')
 
-if __name__ == '__main__':
-    main()
+    # Measure the quality of the image
+    noise_threshold = 300  # Medido en [T1]
+    noise_mask = (img_rest < noise_threshold) * (img_rest > 0)
+    noise_power = np.average(np.square(img_rest[noise_mask]))
+
+    signal_mask = img_rest > noise_threshold
+    signal_power = np.average(np.square(img_rest[signal_mask]))
+    signal_contrast = np.max(img_rest[signal_mask] - np.min(img_rest[signal_mask]))
+
+    print(f'Signal power: {signal_power} [T1^2].')
+    print(f'Signal contrast: {signal_contrast} [T1].')
+    print(f'Noise power: {noise_power} [T1^2].')
+    print(f'SNR: {compute_snr(signal_power, noise_power)} [1/1].')
+    print(f'CNR: {compute_cnr(signal_contrast, noise_power)} [1/1].')
+
+    plt.subplot(221), plt.imshow(signal_mask)
+    plt.subplot(222), plt.imshow(noise_mask)
+    plt.subplot(223), plt.imshow(img_rest * signal_mask, cmap=plt.cm.bone)
+    plt.subplot(224), plt.imshow(img_rest * noise_mask, cmap=plt.cm.bone)
+    plt.show()
+
+    # Movement visualization
+    movement_thr = 3e3
+    movement_img = dcms[0].pixel_array - dcms[1].pixel_array
+    movement_mask = np.abs(movement_img) > movement_thr
+
+    plt.subplot(221), plt.imshow(dcms[0].pixel_array, cmap=plt.cm.bone)
+    plt.subplot(222), plt.imshow(dcms[1].pixel_array, cmap=plt.cm.bone)
+    plt.subplot(223), plt.imshow(movement_img, cmap=plt.cm.bone)
+    plt.subplot(224), plt.imshow(movement_mask)
+    plt.show()
