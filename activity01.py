@@ -10,7 +10,6 @@ def load_dcm(filepath: str):
     """ Load a DICOM file. """
     # YOUR CODE HERE: use pydicom.dcmread(...)
     # ...
-    return pydicom.dcmread(filepath)
 
 
 def estimate_noisy_pixels(img: np.ndarray):
@@ -24,14 +23,12 @@ def power_of_signal(signal_or_img: np.ndarray):
     """ Compute the power of a signal. """
     # YOUR CODE HERE
     # ...
-    return np.average(np.square(signal_or_img))
 
 
 def contrast_of_signal(signal_or_img: np.ndarray):
     """ Compute the contrast of a signal. """
     # YOUR CODE HERE
     # ...
-    return np.max(signal_or_img) - np.min(signal_or_img)
 
 
 def compute_snr(signal_power: float, noise_power: float):
