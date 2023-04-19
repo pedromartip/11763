@@ -13,18 +13,37 @@ def load_dcm(filepath: str):
     return pydicom.dcmread(filepath)
 
 
+def estimate_noisy_pixels(img: np.ndarray):
+    """ Estimate the noisy pixels in the background of an image. """
+    noise_threshold = 300  # Medido en [T1]
+    noise_mask = (img_rest < noise_threshold) * (img_rest > 0)
+    return noise_mask
+
+
+def power_of_signal(signal_or_img: np.ndarray):
+    """ Compute the power of a signal. """
+    # YOUR CODE HERE
+    # ...
+    return np.average(np.square(signal_or_img))
+
+
+def contrast_of_signal(signal_or_img: np.ndarray):
+    """ Compute the contrast of a signal. """
+    # YOUR CODE HERE
+    # ...
+    return np.max(signal_or_img) - np.min(signal_or_img)
+
+
 def compute_snr(signal_power: float, noise_power: float):
     """ Compute the signal-to-noise ratio (SNR) of a signal. """
     # YOUR CODE HERE
     # ...
-    return np.sqrt(signal_power/noise_power)
 
 
 def compute_cnr(signal_contrast: float, noise_power: float):
     """ Compute the contrast-to-noise ratio (CNR) of a signal. """
     # YOUR CODE HERE
     # ...
-    return signal_contrast/np.sqrt(noise_power)
 
 
 if __name__ == '__main__':
@@ -35,7 +54,7 @@ if __name__ == '__main__':
     dcm_rest = dcms[0]
     img_rest = dcm_rest.pixel_array
 
-    [print(f'{k}: {v}') for k, v in dcm_rest.items()]
+    [print(f'{dicom_tag}: {dicom_value}') for dicom_tag, dicom_value in dcm_rest.items()]
 
     histogram = cv2.calcHist([img_rest.astype('float32')], [0], mask=None, histSize=[256], ranges=[0, 2 ** 16])
     plt.subplot(121), plt.imshow(img_rest, cmap=plt.cm.bone)
@@ -47,13 +66,11 @@ if __name__ == '__main__':
     img_rest = img_rest.astype('float64')
 
     # Measure the quality of the image
-    noise_threshold = 300  # Medido en [T1]
-    noise_mask = (img_rest < noise_threshold) * (img_rest > 0)
-    noise_power = np.average(np.square(img_rest[noise_mask]))
+    noise_mask = estimate_noisy_pixels(img_rest)
+    signal_power = power_of_signal(img_rest[~noise_mask])
+    noise_power = power_of_signal(img_rest[noise_mask])
 
-    signal_mask = img_rest > noise_threshold
-    signal_power = np.average(np.square(img_rest[signal_mask]))
-    signal_contrast = np.max(img_rest[signal_mask] - np.min(img_rest[signal_mask]))
+    signal_contrast = contrast_of_signal(img_rest[~noise_mask])
 
     print(f'Signal power: {signal_power} [T1^2].')
     print(f'Signal contrast: {signal_contrast} [T1].')
@@ -61,9 +78,9 @@ if __name__ == '__main__':
     print(f'SNR: {compute_snr(signal_power, noise_power)} [1/1].')
     print(f'CNR: {compute_cnr(signal_contrast, noise_power)} [1/1].')
 
-    plt.subplot(221), plt.imshow(signal_mask)
+    plt.subplot(221), plt.imshow(~noise_mask)
     plt.subplot(222), plt.imshow(noise_mask)
-    plt.subplot(223), plt.imshow(img_rest * signal_mask, cmap=plt.cm.bone)
+    plt.subplot(223), plt.imshow(img_rest * (~noise_mask), cmap=plt.cm.bone)
     plt.subplot(224), plt.imshow(img_rest * noise_mask, cmap=plt.cm.bone)
     plt.show()
 
