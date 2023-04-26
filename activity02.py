@@ -66,7 +66,7 @@ if __name__ == '__main__':
     dcm_path = filepath('CT.dcm')
     dcm = pydicom.dcmread(dcm_path)   # Load DICOM file
     img_dcm = dcm.pixel_array         # Get pixel array
-    print(dcm)                          # Print DICOM headers
+    print(dcm)                        # Print DICOM headers
 
     img_sagittal = median_sagittal_plane(img_dcm)
     mask_bone = segment_bones(img_sagittal)
