@@ -16,7 +16,6 @@ def apply_canny(img, sigma):
     # Your code here:
     #   See `skimage.feature.canny(...)`
     # ...
-    return canny(img, sigma=sigma)
 
 
 def visualize_img_and_edges(grayscale_image, edges_image):
@@ -24,10 +23,6 @@ def visualize_img_and_edges(grayscale_image, edges_image):
     # Your code here:
     #   Remember `plt.subplots(...)` and `plt.imshow(...)`.
     # ...
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-    ax1.imshow(grayscale_image)
-    ax2.imshow(edges_image)
-    fig.show()
 
 
 def create_filter_bank():
@@ -48,12 +43,6 @@ def visualize_filter_bank(kernel1, kernel2, kernel3, kernel4, kernel5, kernel6):
     # Your code here:
     #   Remember `plt.subplots(...)` and `plt.imshow(...)`.
     # ...
-    fig, axs = plt.subplots(2, 3)
-    axs = [a for ax in axs for a in ax]
-    fig.suptitle('Kernels')
-    [ax.imshow(k)
-     for k, ax in zip([kernel1, kernel2, kernel3, kernel4, kernel5, kernel6], axs)]
-    fig.show()
 
 
 def apply_filter(image, kernel):
@@ -61,7 +50,6 @@ def apply_filter(image, kernel):
     # Your code here:
     #   See `ndimage.convolve(...)`
     # ...
-    return ndimage.convolve(image, kernel, mode='reflect')  # Why mode='reflect'?
 
 
 def get_marker(img: np.ndarray, position: tp.Tuple):
