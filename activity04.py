@@ -13,17 +13,11 @@ import matplotlib.pyplot as plt
 
 def apply_canny(img, sigma):
     """ Apply Canny edge detector to image. """
-    # Your code here:
-    #   See `skimage.feature.canny(...)`
-    # ...
     return canny(img, sigma=sigma)
 
 
 def visualize_img_and_edges(grayscale_image, edges_image):
     """ Visualize original image and edges. """
-    # Your code here:
-    #   Remember `plt.subplots(...)` and `plt.imshow(...)`.
-    # ...
     fig, (ax1, ax2) = plt.subplots(1, 2)
     ax1.imshow(grayscale_image)
     ax2.imshow(edges_image)
@@ -45,9 +39,6 @@ def create_filter_bank():
 
 def visualize_filter_bank(kernel1, kernel2, kernel3, kernel4, kernel5, kernel6):
     """ Visualize filter bank. """
-    # Your code here:
-    #   Remember `plt.subplots(...)` and `plt.imshow(...)`.
-    # ...
     fig, axs = plt.subplots(2, 3)
     axs = [a for ax in axs for a in ax]
     fig.suptitle('Kernels')
@@ -58,9 +49,6 @@ def visualize_filter_bank(kernel1, kernel2, kernel3, kernel4, kernel5, kernel6):
 
 def apply_filter(image, kernel):
     """ Apply linear filter to image. """
-    # Your code here:
-    #   See `ndimage.convolve(...)`
-    # ...
     return ndimage.convolve(image, kernel, mode='reflect')  # Why mode='reflect'?
 
 
