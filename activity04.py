@@ -128,4 +128,4 @@ if __name__ == '__main__':
     fig, axs = plt.subplots(2, 4)
     filtered_images = [apply_filter(img, kernel)
                        for kernel in kernel_selection]
-    visualize_filter_bank(*kernel_selection)
+    visualize_filter_bank(*filtered_images)
