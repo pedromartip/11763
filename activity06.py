@@ -16,9 +16,6 @@ def translation_then_axialrotation(point: tuple[float, float, float], parameters
     v1, v2, v3 = v1/v_norm, v2/v_norm, v3/v_norm
     # Your code here:
     #   ...
-    x, y, z = activity05.translation(point=(x, y, z), translation_vector=(t1, t2, t3))
-    x, y, z = activity05.axial_rotation(point=(x, y, z), angle_in_rads=angle_in_rads, axis_of_rotation=(v1, v2, v3))
-    return x, y, z
 
 
 def isometry(point: tuple[float, float, float], parameters: tuple[float, ...]):
@@ -30,16 +27,12 @@ def isometry(point: tuple[float, float, float], parameters: tuple[float, ...]):
     v1, v2, v3 = v1/v_norm, v2/v_norm, v3/v_norm
     # Your code here:
     #   ...
-    x, y, z = activity05.translation(point=(x, y, z), translation_vector=(displacement*v1, displacement*v2, displacement*v3))
-    x, y, z = activity05.axial_rotation(point=(x, y, z), angle_in_rads=angle_in_rads, axis_of_rotation=(v1, v2, v3))
-    return x, y, z
 
 
 def vector_of_residuals(ref_points: np.ndarray, inp_points: np.ndarray) -> np.ndarray:
     """ Given arrays of 3D points with shape (point_idx, 3), compute vector of residuals as their respective distance """
     # Your code here:
     #   ...
-    return np.sqrt(np.sum((ref_points-inp_points)**2, axis=1))
 
 
 def coregister_landmarks(ref_landmarks: np.ndarray, inp_landmarks: np.ndarray):
@@ -54,22 +47,20 @@ def coregister_landmarks(ref_landmarks: np.ndarray, inp_landmarks: np.ndarray):
     centroid_inp = np.mean(inp_landmarks, axis=0)
     # Your code here:
     #   ...
-    initial_parameters[0] = centroid_ref[0] - centroid_inp[0]
-    initial_parameters[1] = centroid_ref[1] - centroid_inp[1]
-    initial_parameters[2] = centroid_ref[2] - centroid_inp[2]
 
     def function_to_minimize(parameters):
         """ Transform input landmarks, then compare with reference landmarks."""
         # Your code here:
         #   ...
-        inp_landmarks_transf = np.asarray([translation_then_axialrotation(point, parameters) for point in inp_landmarks])
-        return vector_of_residuals(ref_landmarks, inp_landmarks_transf)
+
+
     # Apply least squares optimization
     result = least_squares(
         function_to_minimize,
         x0=initial_parameters,
         verbose=1)
     return result
+
 
 if __name__ == '__main__':
     # Translation then axial rotation:
