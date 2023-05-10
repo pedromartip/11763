@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from scipy.optimize import least_squares
 
 import activity05
+from utils import str_floats
 
 
 def translation_then_axialrotation(point: tuple[float, float, float], parameters: tuple[float, ...]):
@@ -18,7 +19,7 @@ def translation_then_axialrotation(point: tuple[float, float, float], parameters
     #   ...
 
 
-def isometry(point: tuple[float, float, float], parameters: tuple[float, ...]):
+def screw_displacement(point: tuple[float, float, float], parameters: tuple[float, ...]):
     """ Apply to `point` the screw displacement defined by `parameters`. """
     x, y, z = point
     v1, v2, v3, angle_in_rads, displacement = parameters
