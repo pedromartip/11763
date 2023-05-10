@@ -64,12 +64,14 @@ def coregister_landmarks(ref_landmarks: np.ndarray, inp_landmarks: np.ndarray):
         #   ...
         inp_landmarks_transf = np.asarray([translation_then_axialrotation(point, parameters) for point in inp_landmarks])
         return vector_of_residuals(ref_landmarks, inp_landmarks_transf)
+
     # Apply least squares optimization
     result = least_squares(
         function_to_minimize,
         x0=initial_parameters,
         verbose=1)
     return result
+
 
 if __name__ == '__main__':
     # Translation then axial rotation:
