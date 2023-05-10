@@ -13,12 +13,6 @@ def multiply_quaternions(
     """ Multiply two quaternions, expressed as (1, i, j, k). """
     # Your code here:
     #   ...
-    return (
-        q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3],
-        q1[0] * q2[1] + q1[1] * q2[0] + q1[2] * q2[3] - q1[3] * q2[2],
-        q1[0] * q2[2] - q1[1] * q2[3] + q1[2] * q2[0] + q1[3] * q2[1],
-        q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1] + q1[3] * q2[0]
-    )
 
 
 def conjugate_quaternion(
@@ -27,9 +21,6 @@ def conjugate_quaternion(
     """ Multiply two quaternions, expressed as (1, i, j, k). """
     # Your code here:
     #   ...
-    return (
-        q[0], -q[1], -q[2], -q[3]
-    )
 
 
 def translation(
@@ -41,7 +32,6 @@ def translation(
     v1, v2, v3 = translation_vector
     # Your code here
     # ...
-    return (x+v1, y+v2, z+v3)
 
 def axial_rotation(
         point: tuple[float, float, float],
@@ -55,16 +45,6 @@ def axial_rotation(
     v1, v2, v3 = v1 / v_norm, v2 / v_norm, v3 / v_norm
     # Your code here:
     #   ...
-    #   Quaternion associated to point.
-    p = (0, x, y, z)
-    #   Quaternion associated to axial rotation.
-    cos, sin = math.cos(angle_in_rads / 2), math.sin(angle_in_rads / 2)
-    q = (cos, sin * v1, sin * v2, sin * v3)
-    #   Quaternion associated to image point
-    q_star = conjugate_quaternion(q)
-    p_prime = multiply_quaternions(q, multiply_quaternions(p, q_star))
-    #   Interpret as 3D point (i.e. drop first coordinate)
-    return p_prime[1], p_prime[2], p_prime[3]
 
 
 if __name__ == '__main__':
