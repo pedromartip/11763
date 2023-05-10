@@ -3,7 +3,7 @@ import math
 import numpy as np
 from matplotlib import pyplot as plt
 
-from utils import str_quaternion
+from utils import str_quaternion, str_floats
 
 
 def multiply_quaternions(
