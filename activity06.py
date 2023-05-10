@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from scipy.optimize import least_squares
 
 import activity05
+from utils import str_floats
 
 
 def translation_then_axialrotation(point: tuple[float, float, float], parameters: tuple[float, ...]):
@@ -21,7 +22,7 @@ def translation_then_axialrotation(point: tuple[float, float, float], parameters
     return x, y, z
 
 
-def isometry(point: tuple[float, float, float], parameters: tuple[float, ...]):
+def screw_displacement(point: tuple[float, float, float], parameters: tuple[float, ...]):
     """ Apply to `point` the screw displacement defined by `parameters`. """
     x, y, z = point
     v1, v2, v3, angle_in_rads, displacement = parameters
@@ -81,8 +82,8 @@ if __name__ == '__main__':
     axis_of_rotation = (1, 0, 0)
     parameters = translation_vector + (alpha_rads,) + axis_of_rotation
     print(f'Starting from {point}, translate along {translation_vector}, then rotate {alpha_rads} rads around {axis_of_rotation}:')
-    print(f'  >> Result: {translation_then_axialrotation(point, parameters)}.')
-    print(f'  >> Expected: (4, 6, 4).')
+    print(f'  >> Result: {str_floats(translation_then_axialrotation(point, parameters))}.')
+    print(f'  >> Expected: (4.00, 1.41, 7.07).')
 
     # Isometry:
     point = (4, 5, 6)
@@ -91,17 +92,17 @@ if __name__ == '__main__':
     alpha_rads = math.radians(45)
     parameters = screw_axis + (alpha_rads, displacement)
     print(f'Starting from {point}, translate {displacement}px along {screw_axis}, then rotate {alpha_rads} rads around same axis:')
-    print(f'  >> Result: {isometry(point, parameters)}.')
-    print(f'  >> Expected: (4, 6, 4).')
+    print(f'  >> Result: {str_floats(screw_displacement(point, parameters))}.')
+    print(f'  >> Expected: (8.20, 2.16, 1.37).')
 
-    # Quadratic residues:
+    # Vector of residuals:
     ref_landmarks = np.asarray([(0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 1)])
     inp_landmarks = np.asarray([(0.05, 3.22, 0.94), (0.59, 3.56, 1.71), (0.39, 3.45, 0.37), (-0.52, 3.79, 1.23), (0.16, 4.88, 1.22)])
     print(f'Residual vector of distances between each pair of landmark points (ref vs. input):')
-    print(f'  >> Result: {vector_of_residuals(ref_landmarks, inp_landmarks)}.')
-    print(f'  >> Expected: (4, 6, 4).')
+    print(f'  >> Result: {str_floats(vector_of_residuals(ref_landmarks, inp_landmarks))}.')
+    print(f'  >> Expected: (3.35, 3.97, 2.51, 3.83, 3.98).')
     
-    # Quadratic residues visualization
+    # Vector of residuals: visualization
     fig = plt.figure()
     axs = np.asarray([fig.add_subplot(121, projection='3d'), fig.add_subplot(122, projection='3d')])
     axs[0].scatter(ref_landmarks[..., 0], ref_landmarks[..., 1], ref_landmarks[..., 2], c=ref_landmarks, marker='o')
@@ -126,8 +127,8 @@ if __name__ == '__main__':
 
     t1, t2, t3, angle_in_rads, v1, v2, v3 = result.x
     print(f'Best parameters:')
-    print(f'  >> Translation: ({t1}, {t2}, {t3}).')
-    print(f'  >> Rotation: {angle_in_rads} rads around axis ({v1}, {v2}, {v3}).')
+    print(f'  >> Translation: ({t1:0.02f}, {t2:0.02f}, {t3:0.02f}).')
+    print(f'  >> Rotation: {angle_in_rads:0.02f} rads around axis ({v1:0.02f}, {v2:0.02f}, {v3:0.02f}).')
 
     inp_landmarks_transf = np.asarray([translation_then_axialrotation(point, result.x) for point in inp_landmarks])
 
@@ -142,11 +143,6 @@ if __name__ == '__main__':
     axs[1].scatter(inp_landmarks_transf[..., 0], inp_landmarks_transf[..., 1], inp_landmarks_transf[..., 2], c=ref_landmarks, marker='^')
     axs[1].set_title('After')
     # Uniform axis scaling
-    all_points = np.concatenate([ref_landmarks, inp_landmarks], axis=0)
-    range_x = np.asarray([np.min(all_points[..., 0]), np.max(all_points[..., 0])])
-    range_y = np.asarray([np.min(all_points[..., 1]), np.max(all_points[..., 1])])
-    range_z = np.asarray([np.min(all_points[..., 2]), np.max(all_points[..., 2])])
-    max_midrange = max(range_x[1] - range_x[0], range_y[1] - range_y[0], range_z[1] - range_z[0]) / 2
     for ax in axs.flatten():
         ax.set_xlim3d(range_x[0] / 2 + range_x[1] / 2 - max_midrange, range_x[0] / 2 + range_x[1] / 2 + max_midrange)
         ax.set_ylim3d(range_y[0] / 2 + range_y[1] / 2 - max_midrange, range_y[0] / 2 + range_y[1] / 2 + max_midrange)
