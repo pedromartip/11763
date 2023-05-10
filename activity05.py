@@ -3,7 +3,7 @@ import math
 import numpy as np
 from matplotlib import pyplot as plt
 
-from utils import str_quaternion
+from utils import str_quaternion, str_floats
 
 
 def multiply_quaternions(
@@ -84,15 +84,15 @@ if __name__ == '__main__':
     point = (4, 5, 6)
     translation_vector = (0, 1, -2)
     print(f'Translation of {point} along vector {translation_vector}:')
-    print(f'  >> Result: {translation(point, translation_vector)}.')
-    print(f'  >> Expected: (4, 6, 4).')
+    print(f'  >> Result: {str_floats(translation(point, translation_vector))}.')
+    print(f'  >> Expected: (4.00, 6.00, 4.00).')
 
     # Axial rotation
     point = (5, 5, 5)
     axis_of_rotation = (1, 0, 0)
     alpha_rads = math.radians(45)
-    print(f'Axial rotation of {point}, {alpha_rads} rads around axis {axis_of_rotation}:')
-    print(f'  >> Result: {axial_rotation(point, alpha_rads, axis_of_rotation)}.')
+    print(f'Axial rotation of {point}, {alpha_rads:0.02f} rads around axis {axis_of_rotation}:')
+    print(f'  >> Result: {str_floats(axial_rotation(point, alpha_rads, axis_of_rotation))}.')
     print(f'  >> Expected: (5.00, 0.00, 7.07).')
 
     # Visualization of translation and axial rotation
