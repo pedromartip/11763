@@ -11,14 +11,12 @@ def mean_absolute_error(img_input: np.ndarray, img_reference) -> np.ndarray:
     """ Compute the MAE between two images. """
     # Your code here:
     #   ...
-    return np.mean(np.abs(img_input - img_reference))
 
 
 def mean_squared_error(img_input: np.ndarray, img_reference) -> np.ndarray:
     """ Compute the MSE between two images. """
     # Your code here:
     #   ...
-    return np.mean((img_input - img_reference)**2)
 
 
 def mutual_information(img_input: np.ndarray, img_reference) -> np.ndarray:
