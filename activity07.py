@@ -25,6 +25,20 @@ def mutual_information(img_input: np.ndarray, img_reference) -> np.ndarray:
     """ Compute the Shannon Mutual Information between two images. """
     # Your code here:
     #   ...
+    nbins = [10, 10]
+    # Compute entropy of each image
+    hist = np.histogram(img_input.ravel(), bins=nbins[0])[0]
+    prob_distr = hist / np.sum(hist)
+    entropy_input = -np.sum(prob_distr * np.log2(prob_distr + 1e-7))  # Why +1e-7?
+    hist = np.histogram(img_reference.ravel(), bins=nbins[0])[0]
+    prob_distr = hist / np.sum(hist)
+    entropy_reference = -np.sum(prob_distr * np.log2(prob_distr + 1e-7))  # Why +1e-7?
+    # Compute joint entropy
+    joint_hist = np.histogram2d(img_input.ravel(), img_reference.ravel(), bins=nbins)[0]
+    prob_distr = joint_hist / np.sum(joint_hist)
+    joint_entropy = -np.sum(prob_distr * np.log2(prob_distr + 1e-7))
+    # Compute mutual information
+    return entropy_input + entropy_reference - joint_entropy
 
 
 if __name__ == '__main__':
@@ -57,5 +71,5 @@ if __name__ == '__main__':
 
     mutual_inf = mutual_information(imgs[0], imgs[1])
     print('Mutual Information:')
-    print(f'  >> Result: {mutual_inf} bits')
-    print(f'  >> Expected: TODO bits')
+    print(f'  >> Result: {mutual_inf:02f} bits')
+    print(f'  >> Expected value heavily depends on the discretization of the images.')
