@@ -5,65 +5,24 @@ import pydicom
 from skimage.morphology import binary_dilation, binary_erosion
 
 
-def get_amygdala_mask(img_atlas: np.ndarray) -> np.ndarray:
+def mean_absolute_error(img_input: np.ndarray, img_reference) -> np.ndarray:
+    """ Compute the MAE between two images. """
     # Your code here:
     #   ...
-    amygdala_mask = np.zeros_like(img_atlas)
-    amygdala_mask[img_atlas == 45] = 1
-    amygdala_mask[img_atlas == 46] = 1
-    return amygdala_mask
+    return np.mean(np.abs(img_input - img_reference))
 
 
-def find_centroid(mask: np.ndarray) -> np.ndarray:
-    # Your code here:
-    #   Consider using `np.where` to find the indices of the voxels in the mask
-    #   ...
-    idcs = np.where(mask == 1)
-    centroid = np.stack([
-        np.mean(idcs[0]),
-        np.mean(idcs[1]),
-        np.mean(idcs[2]),
-    ])
-    return centroid
-
-
-def visualize_axial_slice(
-        img: np.ndarray,
-        mask: np.ndarray,
-        mask_centroid: np.ndarray,
-        ):
-    """ Visualize the axial slice (firs dim.) of a single region with alpha fusion. """
-    # Your code here
-    #   Remember `matplotlib.colormaps['cmap_name'](...)`
-    #   See also `matplotlib.colors.Normalize(vmin=..., vmax=...)`
-    #   ...
-    img_slice = img[mask_centroid[0].astype('int'), :, :]
-    mask_slice = mask[mask_centroid[0].astype('int'), :, :]
-
-    cmap = matplotlib.colormaps['bone']
-    norm = matplotlib.colors.Normalize(vmin=np.amin(img_slice), vmax=np.amax(img_slice))
-    fused_slice = \
-        0.5*cmap(norm(img_slice))[..., :3] + \
-        0.5*np.stack([mask_slice, np.zeros_like(mask_slice), np.zeros_like(mask_slice)], axis=-1)
-    plt.imshow(fused_slice)
-    plt.show()
-
-
-def find_region_volume(region_mask):
-    """ Returns the volume of the region in mm^3. """
+def mean_squared_error(img_input: np.ndarray, img_reference) -> np.ndarray:
+    """ Compute the MAE between two images. """
     # Your code here:
     #   ...
-    return np.sum(region_mask)
+    return np.mean((img_input - img_reference)**2)
 
 
-def find_region_surface(mask):
-    """ Returns the surface of the region in mm^2. """
+def mutual_information(img_input: np.ndarray, img_reference) -> np.ndarray:
+    """ Compute the Shannon Mutual Information between two images. """
     # Your code here:
-    #   See `skimage.morphology.binary_erosion()` and `skimage.morphology.binary_dilation()`
     #   ...
-    inner_surface = mask - binary_erosion(mask, np.ones((3, 3, 3)))
-    outer_surface = binary_dilation(mask, np.ones((3, 3, 3))) - mask
-    return (np.sum(inner_surface) + np.sum(outer_surface) ) / 2     # Average of inner and outer surface
 
 
 if __name__ == '__main__':
