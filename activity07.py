@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import pydicom
 from skimage.morphology import binary_dilation, binary_erosion
 
+from utils import filepath
+
 
 def mean_absolute_error(img_input: np.ndarray, img_reference) -> np.ndarray:
     """ Compute the MAE between two images. """
@@ -27,6 +29,12 @@ def mutual_information(img_input: np.ndarray, img_reference) -> np.ndarray:
 
 if __name__ == '__main__':
     # Load data
+    filenames = ['PCARDM1_T1_Rest.dcm',
+                 'PCARDM1_T1_Stress.dcm']
+    dcms = [load_dcm(filepath(n)) for n in filenames]
+
+    dcm_rest = dcms[0]
+    img_rest = dcm_rest.pixel_array
     dcm_phantom = pydicom.dcmread('data/icbm_avg_152_t1_tal_nlin_symmetric_VI_alternative.dcm')
     img_phantom = dcm_phantom.pixel_array[6:-6, 6:-6, 6:-6]     # Crop phantom to atlas size
     dcm_atlas = pydicom.dcmread('data/AAL3_1mm.dcm')
