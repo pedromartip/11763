@@ -15,7 +15,7 @@ def mean_absolute_error(img_input: np.ndarray, img_reference) -> np.ndarray:
 
 
 def mean_squared_error(img_input: np.ndarray, img_reference) -> np.ndarray:
-    """ Compute the MAE between two images. """
+    """ Compute the MSE between two images. """
     # Your code here:
     #   ...
     return np.mean((img_input - img_reference)**2)
@@ -31,31 +31,31 @@ if __name__ == '__main__':
     # Load data
     filenames = ['PCARDM1_T1_Rest.dcm',
                  'PCARDM1_T1_Stress.dcm']
-    dcms = [load_dcm(filepath(n)) for n in filenames]
+    dcms = [pydicom.dcmread(filepath(n)) for n in filenames]
+    imgs = [d.pixel_array for d in dcms]
 
-    dcm_rest = dcms[0]
-    img_rest = dcm_rest.pixel_array
-    dcm_phantom = pydicom.dcmread('data/icbm_avg_152_t1_tal_nlin_symmetric_VI_alternative.dcm')
-    img_phantom = dcm_phantom.pixel_array[6:-6, 6:-6, 6:-6]     # Crop phantom to atlas size
-    dcm_atlas = pydicom.dcmread('data/AAL3_1mm.dcm')
-    img_atlas = dcm_atlas.pixel_array
-
-    fig, axs = plt.subplots(1, 2)
-    axs[0].imshow(img_phantom[100, :, :], cmap='bone')
-    axs[1].imshow(img_atlas[100, :, :], cmap='tab20')
+    # Visualize
+    fig, axs = plt.subplots(1, 3)
+    axs[0].imshow(imgs[0], cmap='bone')
+    axs[0].set_title('Image 1')
+    axs[1].imshow(imgs[0] - imgs[1], cmap='bone')
+    axs[1].set_title('Difference')
+    axs[2].imshow(imgs[1], cmap='bone')
+    axs[2].set_title('Image 2')
     fig.show()
 
-    amygdala_mask = get_amygdala_mask(img_atlas)
-    mask_centroid = find_centroid(amygdala_mask)
-    visualize_axial_slice(img_phantom, amygdala_mask, mask_centroid)
+    # Compute metrics
+    mae = mean_absolute_error(imgs[0], imgs[1])
+    print('MAE:')
+    print(f'  >> Result: {mae:.02f} HU')
+    print(f'  >> Expected: 927.75 HU')
 
-    vol = find_region_volume(amygdala_mask)
-    surf = find_region_surface(amygdala_mask)
+    mse = mean_squared_error(imgs[0], imgs[1])
+    print('MSE:')
+    print(f'  >> Result: {mse:.02f} HU^2')
+    print(f'  >> Expected: 919.08 HU^2')
 
-    print('Amygdala volume:')
-    print(f'  >> Result: {vol} mm^3')
-    print(f'  >> Expected: 3744 mm^3')
-
-    print('Amygdala surface:')
-    print(f'  >> Result: {surf} mm^2')
-    print(f'  >> Expected: 1849-6920 mm^2 (depending on the approximation)')
+    mutual_inf = mutual_information(imgs[0], imgs[1])
+    print('Mutual Information:')
+    print(f'  >> Result: {mutual_inf} bits')
+    print(f'  >> Expected: TODO bits')
