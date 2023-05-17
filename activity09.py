@@ -99,8 +99,8 @@ if __name__ == '__main__':
         load_single_segmentation(method_B, idx_sample)
     )
     print(f'Per-pixel performance measures: {method_A} vs. {method_B}, sample nº{idx_sample}')
-    print(f'  >> Result: {tp} TP, {tn} TN, {fp} FP, {fn} FN')
-    print(f'  >> Expected: TODO.')
+    print(f'  >> Result:   {tp} TP, {tn} TN, {fp} FP, {fn} FN')
+    print(f'  >> Expected: 21483 TP, 294039 TN, 6481 FP, 7957 FN.')
 
     # Image-level performance measures
     sen, spe, fsc = perimage_performance_measures(
@@ -108,8 +108,8 @@ if __name__ == '__main__':
         load_single_segmentation(method_B, idx_sample)
     )
     print(f'Per-image performance measures: {method_A} vs. {method_B}, sample nº{idx_sample}')
-    print(f'  >> Result: {sen:.02%} sensitivity, {spe:.02%} specificity, {fsc:.02%} f1_score')
-    print(f'  >> Expected: TODO.')
+    print(f'  >> Result:   {sen:.02%} sensitivity, {spe:.02%} specificity, {fsc:.02%} f1_score')
+    print(f'  >> Expected: 72.97% sensitivity, 97.84% specificity, 74.85% f1_score.')
 
     # Visualize some images
     fig, axs = plt.subplots(2, 4)
@@ -124,19 +124,21 @@ if __name__ == '__main__':
     plt.show()
 
     # Hypothesis testing
+    method_A = 'Prediction2004Staal'
+    method_B = 'Prediction2004Niemeijer'
     pvalue = hypothesis_testing(
         method_A,
         method_B
     )
     print(f'Hypothesis testing: {method_A} vs. {method_B}')
-    print(f'  >> Result: {pvalue:.02%} p-value.')
-    print(f'  >> Expected: TODO.')
+    print(f'  >> Result:   p-value = {pvalue:.04f}.')
+    print(f'  >> Expected: p-value = 0.0413.')
 
-    # Visualize all methods
+    # Hypothesis testing: All vs all
+    print(f'Hypothesis testing: All vs all.')
     for method_A in SEGMENTATION_METHODS[1:]:
         for method_B in SEGMENTATION_METHODS[1:]:
             if method_A != method_B:
                 pvalue = hypothesis_testing(method_A, method_B)
-                print(f'Hypothesis testing: {method_A} better than {method_B}? -> p-value: {pvalue:.02%}.')
                 if pvalue < 0.05:
-                    print(f'  >> {method_A} is statistically better than {method_B}!')
+                    print(f'  >> {method_A} is statistically better than {method_B} (p-value: {pvalue:.04f})')
