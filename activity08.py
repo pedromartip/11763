@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import pydicom
 from skimage.morphology import binary_dilation, binary_erosion
 
+from utils import filepath
+
 
 def get_amygdala_mask(img_atlas: np.ndarray) -> np.ndarray:
     # Your code here:
@@ -68,9 +70,9 @@ def find_region_surface(mask):
 
 if __name__ == '__main__':
     # Load data
-    dcm_phantom = pydicom.dcmread('data/icbm_avg_152_t1_tal_nlin_symmetric_VI_alternative.dcm')
+    dcm_phantom = pydicom.dcmread(filepath('icbm_avg_152_t1_tal_nlin_symmetric_VI_alternative.dcm'))
     img_phantom = dcm_phantom.pixel_array[6:-6, 6:-6, 6:-6]     # Crop phantom to atlas size
-    dcm_atlas = pydicom.dcmread('data/AAL3_1mm.dcm')
+    dcm_atlas = pydicom.dcmread(filepath('AAL3_1mm.dcm'))
     img_atlas = dcm_atlas.pixel_array
 
     fig, axs = plt.subplots(1, 2)
