@@ -37,48 +37,44 @@ def perpixel_performance_measures(
         mask_prediction: np.ndarray
         ) -> tuple[int, int, int, int]:
     """ Compute the number of true/false positives and true/false negatives from two boolean masks."""
+    true_negatives = 0
+    true_positives = 0
+    false_negatives = 0
+    false_positives = 0
     # Your code here:
     #   ...
-    true_negatives = np.sum((mask_reference == 0) & (mask_prediction == 0))
-    true_positives = np.sum((mask_reference == 1) & (mask_prediction == 1))
-    false_negatives = np.sum((mask_reference == 1) & (mask_prediction == 0))
-    false_positives = np.sum((mask_reference == 0) & (mask_prediction == 1))
+
     return true_positives, true_negatives, false_positives, false_negatives
 
 
-def perimage_performance_measures(mask_reference, mask_prediction):
+def perimage_performance_measures(
+        mask_reference: np.ndarray,
+        mask_prediction: np.ndarray
+        ) -> tuple[float, float, float]:
     """ Compute the sensitivity, specificity and f1_score from two boolean masks. """
+    sensitivity = 0
+    specificity = 0
+    f1_score = 0
     # Your code here:
     #   ...
-    tp, tn, fp, fn = perpixel_performance_measures(mask_reference, mask_prediction)
-    sensitivity = tp / (tp + fn)
-    specificity = tn / (tn + fp)
-    f1_score = 2 * tp / (2 * tp + fp + fn)
+
     return sensitivity, specificity, f1_score
 
 
-def hypothesis_testing(name_method_A: str, name_method_B: str) -> float:
+def hypothesis_testing(
+        name_method_A: str,
+        name_method_B: str
+        ) -> float:
     """ Returns the p-value of a hypothesis test to determine if segmentation A is statistically superior to segmentation B."""
     images_gt = [load_single_segmentation('GroundTruth01', idx) for idx in range(1, 21)]
     # Your code here: load all images and evaluate it according to the corresponding ground truth
     #   Which is a better performance measure: sensitivity, specificity or f1_score?
     #   ...
-    images_A = [load_single_segmentation(name_method_A, idx) for idx in range(1, 21)]
-    measures_A = [
-        perimage_performance_measures(gt, pred)[2]  # Why [2]?
-        for gt, pred in zip(images_gt, images_A)
-    ]
-    images_B = [load_single_segmentation(name_method_B, idx) for idx in range(1, 21)]
-    measures_B = [
-        perimage_performance_measures(gt, pred)[2]
-        for gt, pred in zip(images_gt, images_B)
-    ]
 
     # Your code here: perform the hypothesis test of whether one measure is statistically superior to the other
     #   Consider the wilcoxon signed-rank test (why?), see `scipy.stats.wilcoxon(...)`
+    #   Return the p-value of the corresponding test
     #   ...
-    test = wilcoxon(measures_A, measures_B, alternative='greater')
-    return test.pvalue
 
 
 if __name__ == '__main__':
