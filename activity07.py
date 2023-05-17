@@ -56,4 +56,4 @@ if __name__ == '__main__':
     mutual_inf = mutual_information(imgs[0], imgs[1])
     print('Mutual Information:')
     print(f'  >> Result: {mutual_inf} bits')
-    print(f'  >> Expected: TODO bits')
+    print(f'  >> Expected value heavily depends on the discretization of the images.')
