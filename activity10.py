@@ -22,7 +22,6 @@ def interpret_test(
     # YOUR CODE HERE:
     #   Set the value of `reject_null_hypothesis` to True or False, depending on the p-value and the significance level.
     # ...
-    reject_null_hypothesis = False  # You might delete this line
     reject_null_hypothesis = test_result.pvalue < significance_level
 
     if reject_null_hypothesis:
@@ -43,7 +42,7 @@ if __name__ == "__main__":
     plotting.scatter_matrix(dataset[['PIQ', 'VIQ', 'FSIQ']])
     plt.show()
 
-    # 1) Determine whether PIQ follows a normal distribution.
+    # 1) Determine whether PIQ values follow a normal distribution.
     data = dataset['PIQ']
     res = shapiro(data)
     interpret_test(
