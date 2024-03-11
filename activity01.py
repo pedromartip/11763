@@ -8,7 +8,7 @@ from utils import filepath
 
 def load_dcm(filepath: str):
     """ Load a DICOM file. """
-    pydicom.dcmread(filepath)
+    return pydicom.dcmread(filepath)
 
 
 def estimate_noisy_pixels(img: np.ndarray):
@@ -43,6 +43,7 @@ if __name__ == '__main__':
     dcms = [load_dcm(filepath(n)) for n in filenames]
 
     dcm_rest = dcms[0]
+    print(f'dcm_rest: {dcm_rest}')
     img_rest = dcm_rest.pixel_array
 
     [print(f'{dicom_tag}: {dicom_value}') for dicom_tag, dicom_value in dcm_rest.items()]
