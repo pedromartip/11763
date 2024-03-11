@@ -8,8 +8,7 @@ from utils import filepath
 
 def load_dcm(filepath: str):
     """ Load a DICOM file. """
-    # YOUR CODE HERE: use pydicom.dcmread(...)
-    # ...
+    pydicom.dcmread(filepath)
 
 
 def estimate_noisy_pixels(img: np.ndarray):
@@ -21,26 +20,21 @@ def estimate_noisy_pixels(img: np.ndarray):
 
 def power_of_signal(signal_or_img: np.ndarray):
     """ Compute the power of a signal. """
-    # YOUR CODE HERE
-    # ...
+    return signal_or_img**2
 
 
 def contrast_of_signal(signal_or_img: np.ndarray):
     """ Compute the contrast of a signal. """
-    # YOUR CODE HERE
-    # ...
+    return np.max(signal_or_img) - np.min(signal_or_img)
 
 
 def compute_snr(signal_power: float, noise_power: float):
     """ Compute the signal-to-noise ratio (SNR) of a signal. """
-    # YOUR CODE HERE
-    # ...
-
+    return np.divide(np.sqrt(power_of_signal(signal_power)), contrast_of_signal(signal_power))
 
 def compute_cnr(signal_contrast: float, noise_power: float):
     """ Compute the contrast-to-noise ratio (CNR) of a signal. """
-    # YOUR CODE HERE
-    # ...
+    return np.divide(contrast_of_signal(signal_contrast),contrast_of_signal(signal_power))
 
 
 if __name__ == '__main__':
