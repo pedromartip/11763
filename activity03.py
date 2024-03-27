@@ -24,6 +24,7 @@ def MIP_sagittal_plane(img_dcm: np.ndarray) -> np.ndarray:
     # Your code here:
     #   See `np.max(...)`
     # ...
+    return np.max(img_dcm[])
 
 
 def AIP_sagittal_plane(img_dcm: np.ndarray) -> np.ndarray:
