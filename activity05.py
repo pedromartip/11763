@@ -12,18 +12,21 @@ def multiply_quaternions(
         q2: tuple[float, float, float, float]
         ) -> tuple[float, float, float, float]:
     """ Multiply two quaternions, expressed as (1, i, j, k). """
-    return {
+    return (
         q1[0]*q2[0]-q1[1]*q2[1]-q1[2]*q2[2]-q1[3]*q2[3],
-        q1[0]*q2[1]+q1[1]*q2[2]+q1[2]*q2[3]-q1[3]*q2[0], # q1[1]*q2[2] --> Cambiar esto
+        q1[0]*q2[1]+q1[1]*q2[0]+q1[2]*q2[3]-q1[3]*q2[2],
         q1[0]*q2[2]-q1[1]*q2[3]+q1[2]*q2[0]+q1[3]*q2[1],
-        q1[0]*q2[3]+q1[1]*q2[0]-q1[2]*q2[1]+q1[3]*q2[2],
-    }
+        q1[0]*q2[3]+q1[1]*q2[2]-q1[2]*q2[1]+q1[3]*q2[0],
+    )
 
 
 def conjugate_quaternion(
         q: tuple[float, float, float, float]
         ) -> tuple[float, float, float, float]:
     """ Multiply two quaternions, expressed as (1, i, j, k). """
+    return (
+        q[0], -q[1], -q[2], -q[3]
+    )
     
 
 
@@ -34,8 +37,7 @@ def translation(
     """ Perform translation of `point` by `translation_vector`. """
     x, y, z = point
     v1, v2, v3 = translation_vector
-    # Your code here
-    # ...
+    return (v1+x, v2+y, v3+z)
 
 def axial_rotation(
         point: tuple[float, float, float],
@@ -49,7 +51,12 @@ def axial_rotation(
     v1, v2, v3 = v1 / v_norm, v2 / v_norm, v3 / v_norm
     # Your code here:
     #   ...
-
+    quaternion_point = (0, x, y, z)
+    half_angle = angle_in_rads/2
+    axial_quaternion = (np.cos(half_angle), np.sin(half_angle)*v1, np.sin(half_angle)*v2, np.sin(half_angle)*v3)
+    q_star = conjugate_quaternion(axial_quaternion)
+    p_prima = multiply_quaternions(axial_quaternion,multiply_quaternions(quaternion_point,q_star))
+    return p_prima[1], p_prima[2], p_prima[3] # Tenim que extreure sa part imaginaria
 
 if __name__ == '__main__':
     # Multiply quaternions
